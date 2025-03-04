@@ -6,7 +6,7 @@
 #include <iostream>
 
 void solve_equation(double a, double b, double c);
-double discriminant(double a, double b, double c);
+double find_discriminant(double a, double b, double c);
 void solve_quadratic(double a, double b, double c);
 void solve_line(double b, double c);
 

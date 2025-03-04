@@ -1,7 +1,7 @@
 #include "quadratic.h"
 
 void solve_equation(double a, double b, double c) {
-    if (a == 0) {
+    if (a == 0.0) {
         solve_line(b, c);
     }
     else {
@@ -9,8 +9,8 @@ void solve_equation(double a, double b, double c) {
     }
 }
 void solve_line(double b, double c) {
-    if (b == 0) {
-        if (c == 0) {
+    if (b == 0.0) {
+        if (c == 0.0) {
             std::cout << "Any x is a solution" << std::endl;
         }
         else {
@@ -22,21 +22,21 @@ void solve_line(double b, double c) {
         std::cout << "There is one root: " << x << std::endl;
     }
 }
-double discriminant(double a, double b, double c) {
-    return pow(b, 2) - 4 * a * c;
+double find_discriminant(double a, double b, double c) {
+    return pow(b, 2.0) - 4.0 * a * c;
 }
 void solve_quadratic(double a, double b, double c) {
-    double d = discriminant(a, b, c);
-    if (d < 0) {
+    double d = find_discriminant(a, b, c);
+    if (d < 0.0) {
         std::cout << "There are no valid roots" << std::endl;
     }
-    else if (d == 0) {
-        double x = (-b) / (2 * a);
+    else if (d == 0.0) {
+        double x = (-b) / (2.0 * a);
         std::cout << "There is one root: " << x << std::endl;
     }
     else {
-        double x1 = (-b - sqrt(d)) / (2 * a);
-        double x2 = (-b + sqrt(d)) / (2 * a);
+        double x1 = (-b - sqrt(d)) / (2.0 * a);
+        double x2 = (-b + sqrt(d)) / (2.0 * a);
         std::cout << "There are two roots:" << std::endl
             << "x1 = " << x1 << std::endl
             << "x2 = " << x2 << std::endl;
