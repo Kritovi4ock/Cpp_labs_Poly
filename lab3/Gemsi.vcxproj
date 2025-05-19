@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{0c838823-9c1e-491e-ac87-4bb4fea27044}</ProjectGuid>
-    <RootNamespace>Plusilab2</RootNamespace>
+    <ProjectGuid>{1d878e25-a399-4c17-ba2b-09cb8348a665}</ProjectGuid>
+    <RootNamespace>Gemsi</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -104,10 +104,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Project\SDL2-2.0.9\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Project\SDL2-2.0.9\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -127,18 +131,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="quadratic_equation.h" />
-    <ClInclude Include="student.h" />
-    <ClInclude Include="teacher.h" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClCompile Include="Bonus.cpp" />
+    <ClCompile Include="GameBoard.cpp" />
+    <ClCompile Include="Gem.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="quadratic_equation.cpp" />
-    <ClCompile Include="student.cpp" />
-    <ClCompile Include="teacher.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="equations.txt" />
+    <ClInclude Include="Bonus.h" />
+    <ClInclude Include="GameBoard.h" />
+    <ClInclude Include="Gem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
