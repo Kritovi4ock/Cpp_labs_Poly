@@ -31,7 +31,7 @@ void Paddle::moveRight() {
 
 
 void Paddle::render(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Белый
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderFillRect(renderer, &rect);
 }
 
@@ -40,17 +40,22 @@ SDL_Rect Paddle::getRect() const {
 }
 
 void Paddle::shrink(int amount) {
-    rect.w -= amount; // Уменьшаем ширину
+    rect.w -= amount;
     rect.x += amount / 2;
 
-    // Ограничиваем минимальную ширину
     rect.w = std::max(rect.w, 20);
 
-    // Проверяем, чтобы ракетка не вышла за границы окна
     if (rect.x < 0) {
         rect.x = 0;
     }
     else if (rect.x + rect.w > windowWidth) {
         rect.x = windowWidth - rect.w;
+    }
+}
+
+void Paddle::widen(int amount) {
+    rect.w += amount;
+    if (rect.w > windowWidth) {
+        rect.w = windowWidth;
     }
 }

@@ -12,8 +12,9 @@ public:
     void moveRight();
     SDL_Rect getRect() const;
     void shrink(int amount);
+    void widen(int amount);
 private:
     SDL_Rect rect;
     int velocity;
-    int windowWidth; //ширина окна для ограничений движения
+    int windowWidth;
 };

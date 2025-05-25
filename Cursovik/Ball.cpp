@@ -1,7 +1,7 @@
 #include "Ball.h"
 #include <cmath>
 
-Ball::Ball(int x, int y, int radius) : x(x), y(y), radius(radius), xVelocity(0), yVelocity(0), stuckToPaddle(true) { // Скорость равна 0, прилип к ракетке
+Ball::Ball(int x, int y, int radius) : x(x), y(y), radius(radius), xVelocity(0), yVelocity(0), stuckToPaddle(true) {
     rect = { x - radius, y - radius, 2 * radius, 2 * radius };
 }
 

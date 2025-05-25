@@ -18,7 +18,7 @@ public:
     void invertXVelocity();
     void invertYVelocity();
 
-    void setPosition(int x, int y); // Добавили метод для установки позиции
+    void setPosition(int x, int y);
     void setStuckToPaddle(bool stuck);
     bool isStuckToPaddle() const;
 
@@ -28,5 +28,5 @@ private:
     int xVelocity;
     int yVelocity;
     SDL_Rect rect;
-    bool stuckToPaddle; // Добавили флаг
+    bool stuckToPaddle;
 };

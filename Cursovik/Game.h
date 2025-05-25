@@ -2,7 +2,9 @@
 #include <vector>
 #include "Paddle.h"
 #include "Ball.h"
+#include <memory>
 #include "Block.h"
+#include "Bonus.h"
 
 class Game {
 public:
@@ -19,18 +21,20 @@ private:
     bool running;
     int windowWidth;
     int windowHeight;
-
+    bool hasBottomWall;
+    SDL_Rect bottomWallRect;
     Paddle* paddle;
     Ball* ball;
-    std::vector<Block*> blocks;
-
+    std::vector<std::unique_ptr<Block>> blocks;
+    std::vector<std::unique_ptr<Bonus>> bonuses;
     void handleEvents();
     void update();
     void render();
     void createBlocks();
     void checkCollisions();
-
-    void handleBallPaddle(const Uint8* keyboardState); // Добавили управление шариком
-    const double fixedTimeStep = 1.0 / 60.0; // 30 обновлений в секунду (пример)
+    void checkBonusCollisions();
+    void handleBallPaddle(const Uint8* keyboardState);
+    void checkBottomWallCollision();
+    const double fixedTimeStep = 1.0 / 60.0;
     double accumulator = 0.0;
 };
