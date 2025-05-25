@@ -1,6 +1,7 @@
 #include "Block.h"
 #include "Bonus.h"
-Block::Block(int x, int y, int width, int height) : rect({ x, y, width, height }), destroyed(false) {}
+Block::Block(int x, int y, int width, int height)
+    : rect({ x, y, width, height }), destroyed(false) {}
 
 Block::~Block() {}
 
@@ -11,23 +12,16 @@ void Block::render(SDL_Renderer* renderer) {
     }
 }
 
-const SDL_Rect& Block::getRect() const {
-    return rect;
-}
+const SDL_Rect& Block::getRect() const { return rect; }
 
-bool Block::isDestroyed() const {
-    return destroyed;
-}
+bool Block::isDestroyed() const { return destroyed; }
 
-void Block::destroy() {
-    destroyed = true;
-}
+void Block::destroy() { destroyed = true; }
 
-void Block::takeDamage() {
-    destroy();
-}
+void Block::takeDamage() { destroy(); }
 
-SpecialBlock::SpecialBlock(int x, int y, int width, int height) : Block(x, y, width, height) {}
+SpecialBlock::SpecialBlock(int x, int y, int width, int height)
+    : Block(x, y, width, height) {}
 
 SpecialBlock::~SpecialBlock() {}
 
@@ -36,14 +30,13 @@ void SpecialBlock::render(SDL_Renderer* renderer) {
     SDL_RenderFillRect(renderer, &rect);
 }
 
-bool SpecialBlock::isDestroyed() const {
-    return false;
-}
+bool SpecialBlock::isDestroyed() const { return false; }
 
-void SpecialBlock::destroy() {
-}
+void SpecialBlock::destroy() {}
 
-SpeedUpBlock::SpeedUpBlock(int x, int y, int width, int height, int speedIncrease) : Block(x, y, width, height), speedIncrease(speedIncrease) {}
+SpeedUpBlock::SpeedUpBlock(int x, int y, int width, int height,
+    int speedIncrease)
+    : Block(x, y, width, height), speedIncrease(speedIncrease) {}
 
 SpeedUpBlock::~SpeedUpBlock() {}
 
@@ -58,8 +51,7 @@ void SpeedUpBlock::onCollision(Ball& ball) {
     int currentXVelocity = ball.getXVelocity();
     int currentYVelocity = ball.getYVelocity();
 
-    if (!isDestroyed())
-    {
+    if (!isDestroyed()) {
         if (currentXVelocity > 0) {
             ball.setXVelocity(currentXVelocity + speedIncrease);
         }
@@ -78,23 +70,22 @@ void SpeedUpBlock::onCollision(Ball& ball) {
     destroy();
 }
 
-bool SpeedUpBlock::isDestroyed() const {
-    return Block::isDestroyed();
-}
+bool SpeedUpBlock::isDestroyed() const { return Block::isDestroyed(); }
 
-void SpeedUpBlock::destroy() {
-    Block::destroy();
-}
+void SpeedUpBlock::destroy() { Block::destroy(); }
 
 HealthBlock::HealthBlock(int x, int y, int width, int height, int initialHealth)
-    : Block(x, y, width, height), health(initialHealth), initialHealth(initialHealth) {}
+    : Block(x, y, width, height), health(initialHealth),
+    initialHealth(initialHealth) {}
 
 HealthBlock::~HealthBlock() {}
 
 void HealthBlock::render(SDL_Renderer* renderer) {
     if (!isDestroyed()) {
-        Uint8 colorIntensity = static_cast<Uint8>((static_cast<float>(health) / initialHealth) * 255);
-        SDL_SetRenderDrawColor(renderer, 255, 255-colorIntensity, 255-colorIntensity, 255);
+        Uint8 colorIntensity =
+            static_cast<Uint8>((static_cast<float>(health) / initialHealth) * 255);
+        SDL_SetRenderDrawColor(renderer, 255, 255 - colorIntensity,
+            255 - colorIntensity, 255);
         SDL_RenderFillRect(renderer, &rect);
     }
 }
@@ -106,11 +97,10 @@ void HealthBlock::takeDamage() {
     }
 }
 
-bool HealthBlock::isDestroyed() const {
-    return health <= 0;
-}
+bool HealthBlock::isDestroyed() const { return health <= 0; }
 
-BonusBlock::BonusBlock(int x, int y, int width, int height, std::unique_ptr<Bonus> bonus)
+BonusBlock::BonusBlock(int x, int y, int width, int height,
+    std::unique_ptr<Bonus> bonus)
     : Block(x, y, width, height), bonus(std::move(bonus)) {}
 
 BonusBlock::~BonusBlock() {}
@@ -119,16 +109,9 @@ void BonusBlock::render(SDL_Renderer* renderer) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
         SDL_RenderFillRect(renderer, &rect);
     }
-    
 }
-void BonusBlock::destroy() {
-    Block::destroy();
-}
+void BonusBlock::destroy() { Block::destroy(); }
 
-bool BonusBlock::isDestroyed() const {
-    return Block::isDestroyed();
-}
+bool BonusBlock::isDestroyed() const { return Block::isDestroyed(); }
 
-Bonus* BonusBlock::getBonus() const {
-    return bonus.get();
-}
+Bonus* BonusBlock::getBonus() const { return bonus.get(); }

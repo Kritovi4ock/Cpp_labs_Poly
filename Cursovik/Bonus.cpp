@@ -1,6 +1,6 @@
 #include "Bonus.h"
-#include "Paddle.h"
 #include "Ball.h"
+#include "Paddle.h"
 #include <SDL.h>
 
 Bonus::Bonus(int x, int y) : rect({ x, y, 20, 20 }), collected(false) {}
@@ -14,25 +14,17 @@ void Bonus::render(SDL_Renderer* renderer) {
     }
 }
 
-void Bonus::update() {
-    rect.y += 2;
-}
+void Bonus::update() { rect.y += 2; }
 
-SDL_Rect Bonus::getRect() const {
-    return rect;
-}
+SDL_Rect Bonus::getRect() const { return rect; }
 
-bool Bonus::isCollected() const {
-    return collected;
-}
+bool Bonus::isCollected() const { return collected; }
 
 WidenPaddleBonus::WidenPaddleBonus(int x, int y) : Bonus(x, y) {}
 
 WidenPaddleBonus::~WidenPaddleBonus() {}
 
-void WidenPaddleBonus::apply(Paddle& paddle, Ball& ball) {
-    paddle.widen(20);
-}
+void WidenPaddleBonus::apply(Paddle& paddle, Ball& ball) { paddle.widen(20); }
 
 void WidenPaddleBonus::render(SDL_Renderer* renderer) {
     if (!collected) {
@@ -41,7 +33,8 @@ void WidenPaddleBonus::render(SDL_Renderer* renderer) {
     }
 }
 
-ChangeBallSpeedBonus::ChangeBallSpeedBonus(int x, int y, int speedChange) : Bonus(x, y), speedChange(speedChange) {}
+ChangeBallSpeedBonus::ChangeBallSpeedBonus(int x, int y, int speedChange)
+    : Bonus(x, y), speedChange(speedChange) {}
 
 ChangeBallSpeedBonus::~ChangeBallSpeedBonus() {}
 
@@ -94,9 +87,24 @@ void BottomWallBonus::apply(Paddle& paddle, Ball& ball) {
     ball.invertYVelocity();
 }
 
-void BottomWallBonus::render(SDL_Renderer* renderer){
+void BottomWallBonus::render(SDL_Renderer* renderer) {
     if (!collected) {
         SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+        SDL_RenderFillRect(renderer, &rect);
+    }
+}
+
+ChangeTrajectoryBonus::ChangeTrajectoryBonus(int x, int y) : Bonus(x, y) {}
+
+ChangeTrajectoryBonus::~ChangeTrajectoryBonus() {}
+
+void ChangeTrajectoryBonus::apply(Paddle& paddle, Ball& ball) {
+    ball.startRandomTrajectoryChange();
+}
+
+void ChangeTrajectoryBonus::render(SDL_Renderer* renderer) {
+    if (!collected) {
+        SDL_SetRenderDrawColor(renderer, 50, 168, 82, 255);
         SDL_RenderFillRect(renderer, &rect);
     }
 }

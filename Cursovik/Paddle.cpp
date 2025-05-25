@@ -1,7 +1,8 @@
 #include "Paddle.h"
 #include <algorithm>
 
-Paddle::Paddle(int x, int y, int width, int height, int windowWidth) : rect({ x, y, width, height }), velocity(2), windowWidth(windowWidth) {}
+Paddle::Paddle(int x, int y, int width, int height, int windowWidth)
+    : rect({ x, y, width, height }), velocity(2), windowWidth(windowWidth) {}
 
 Paddle::~Paddle() {}
 
@@ -13,7 +14,6 @@ void Paddle::handleInput(const Uint8* keyboardState) {
         moveRight();
     }
 }
-
 
 void Paddle::moveLeft() {
     rect.x -= velocity;
@@ -29,15 +29,12 @@ void Paddle::moveRight() {
     }
 }
 
-
 void Paddle::render(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderFillRect(renderer, &rect);
 }
 
-SDL_Rect Paddle::getRect() const {
-    return rect;
-}
+SDL_Rect Paddle::getRect() const { return rect; }
 
 void Paddle::shrink(int amount) {
     rect.w -= amount;

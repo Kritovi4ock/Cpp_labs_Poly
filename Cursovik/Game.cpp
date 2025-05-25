@@ -1,15 +1,22 @@
 #include "Game.h"
 #include "Utils.h"
-#include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
 #include <memory>
 
-Game::Game(const char* title, int width, int height) : window(nullptr), renderer(nullptr), running(false), windowWidth(width), windowHeight(height), paddle(nullptr), ball(nullptr), hasBottomWall(false), bottomWallRect({ 0, 0, 0, 0 }) { srand(time(0)); }
+Game::Game(const char* title, int width, int height)
+    : window(nullptr), renderer(nullptr), running(false), windowWidth(width),
+    windowHeight(height), paddle(nullptr), ball(nullptr),
+    hasBottomWall(false), bottomWallRect({ 0, 0, 0, 0 }) {
+    srand(time(0));
+}
 
 Game::~Game() {
-    if (paddle) delete paddle;
-    if (ball) delete ball;
+    if (paddle)
+        delete paddle;
+    if (ball)
+        delete ball;
 }
 
 bool Game::init() {
@@ -18,7 +25,9 @@ bool Game::init() {
         return false;
     }
 
-    window = SDL_CreateWindow("Arkanoid", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Arkanoid", SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight,
+        SDL_WINDOW_SHOWN);
     if (!window) {
         std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
         return false;
@@ -30,7 +39,8 @@ bool Game::init() {
         return false;
     }
 
-    paddle = new Paddle(windowWidth / 2 - 50, windowHeight - 50, 100, 20, windowWidth);
+    paddle =
+        new Paddle(windowWidth / 2 - 50, windowHeight - 50, 100, 20, windowWidth);
     ball = new Ball(windowWidth / 2, windowHeight - 50 - 10, 10);
     createBlocks();
 
@@ -81,7 +91,8 @@ void Game::handleEvents() {
 
 void Game::update() {
     if (ball->isStuckToPaddle()) {
-        ball->setPosition(paddle->getRect().x + paddle->getRect().w / 2, paddle->getRect().y - ball->getRadius());
+        ball->setPosition(paddle->getRect().x + paddle->getRect().w / 2,
+            paddle->getRect().y - ball->getRadius());
     }
 
     ball->update();
@@ -92,7 +103,8 @@ void Game::update() {
         bonusPtr->update();
     }
 
-    if (ball->getRect().x <= 0 || ball->getRect().x + 2 * ball->getRadius() >= windowWidth) {
+    if (ball->getRect().x <= 0 ||
+        ball->getRect().x + 2 * ball->getRadius() >= windowWidth) {
         ball->invertXVelocity();
     }
     if (ball->getRect().y <= 0) {
@@ -106,12 +118,11 @@ void Game::update() {
         else {
             paddle->shrink(10);
             ball->setStuckToPaddle(true);
-            ball->setPosition(paddle->getRect().x + paddle->getRect().w / 2, paddle->getRect().y - ball->getRadius());
+            ball->setPosition(paddle->getRect().x + paddle->getRect().w / 2,
+                paddle->getRect().y - ball->getRadius());
             ball->setXVelocity(0);
             ball->setYVelocity(0);
         }
-
-
     }
 }
 
@@ -148,16 +159,19 @@ void Game::createBlocks() {
             int randomNumber = rand() % 10;
 
             if (randomNumber == 0) {
-                blocks.push_back(std::make_unique<HealthBlock>(x, y, blockWidth, blockHeight, 2));
+                blocks.push_back(
+                    std::make_unique<HealthBlock>(x, y, blockWidth, blockHeight, 2));
             }
             else if (randomNumber == 1) {
-                blocks.push_back(std::make_unique<SpecialBlock>(x, y, blockWidth, blockHeight));
+                blocks.push_back(
+                    std::make_unique<SpecialBlock>(x, y, blockWidth, blockHeight));
             }
             else if (randomNumber == 2) {
-                blocks.push_back(std::make_unique<SpeedUpBlock>(x, y, blockWidth, blockHeight, 2));
+                blocks.push_back(
+                    std::make_unique<SpeedUpBlock>(x, y, blockWidth, blockHeight, 2));
             }
             else if (randomNumber == 3) {
-                int bonusType = rand() % 4;
+                int bonusType = rand() % 5;
                 std::unique_ptr<Bonus> bonus;
                 switch (bonusType) {
                 case 0:
@@ -172,19 +186,25 @@ void Game::createBlocks() {
                 case 3:
                     bonus = std::make_unique<BottomWallBonus>(x, y);
                     break;
+                case 4:
+                    bonus = std::make_unique<ChangeTrajectoryBonus>(x, y);
+                    break;
                 }
-                blocks.push_back(std::make_unique<BonusBlock>(x, y, blockWidth, blockHeight, std::move(bonus)));
+                blocks.push_back(std::make_unique<BonusBlock>(
+                    x, y, blockWidth, blockHeight, std::move(bonus)));
             }
 
             else {
-                blocks.push_back(std::make_unique<Block>(x, y, blockWidth, blockHeight));
+                blocks.push_back(
+                    std::make_unique<Block>(x, y, blockWidth, blockHeight));
             }
         }
     }
 }
 
 void Game::checkCollisions() {
-    if (Utils::checkCollision(ball->getRect(), paddle->getRect()) && !ball->isStuckToPaddle()) {
+    if (Utils::checkCollision(ball->getRect(), paddle->getRect()) &&
+        !ball->isStuckToPaddle()) {
         ball->invertYVelocity();
     }
 
@@ -193,25 +213,30 @@ void Game::checkCollisions() {
         SDL_Rect ballRect = ball->getRect();
 
         if (Utils::checkCollision(ballRect, blockRect)) {
-            SpeedUpBlock* speedUpBlock = dynamic_cast<SpeedUpBlock*>(blocks[i].get());
+            SpeedUpBlock* speedUpBlock =
+                dynamic_cast<SpeedUpBlock*>(blocks[i].get());
             HealthBlock* healthBlock = dynamic_cast<HealthBlock*>(blocks[i].get());
             BonusBlock* bonusBlock = dynamic_cast<BonusBlock*>(blocks[i].get());
-            if (!blocks[i]->isDestroyed())
-            {
+            if (!blocks[i]->isDestroyed()) {
                 int topCollision = ballRect.y + ballRect.h - blockRect.y;
                 int bottomCollision = blockRect.y + blockRect.h - ballRect.y;
                 int leftCollision = ballRect.x + ballRect.w - blockRect.x;
                 int rightCollision = blockRect.x + blockRect.w - ballRect.x;
                 if (speedUpBlock) {
                     speedUpBlock->onCollision(*ball);
-                    if (topCollision < bottomCollision && topCollision < leftCollision && topCollision < rightCollision) {
+                    if (topCollision < bottomCollision && topCollision < leftCollision &&
+                        topCollision < rightCollision) {
                         ball->invertYVelocity();
                     }
-                    else if (bottomCollision < topCollision && bottomCollision < leftCollision && bottomCollision < rightCollision) {
+                    else if (bottomCollision < topCollision &&
+                        bottomCollision < leftCollision &&
+                        bottomCollision < rightCollision) {
 
                         ball->invertYVelocity();
                     }
-                    else if (leftCollision < topCollision && leftCollision < bottomCollision && leftCollision < rightCollision) {
+                    else if (leftCollision < topCollision &&
+                        leftCollision < bottomCollision &&
+                        leftCollision < rightCollision) {
 
                         ball->invertXVelocity();
                     }
@@ -225,15 +250,20 @@ void Game::checkCollisions() {
                 }
                 else if (healthBlock) {
 
-                    if (topCollision < bottomCollision && topCollision < leftCollision && topCollision < rightCollision) {
+                    if (topCollision < bottomCollision && topCollision < leftCollision &&
+                        topCollision < rightCollision) {
 
                         ball->invertYVelocity();
                     }
-                    else if (bottomCollision < topCollision && bottomCollision < leftCollision && bottomCollision < rightCollision) {
+                    else if (bottomCollision < topCollision &&
+                        bottomCollision < leftCollision &&
+                        bottomCollision < rightCollision) {
 
                         ball->invertYVelocity();
                     }
-                    else if (leftCollision < topCollision && leftCollision < bottomCollision && leftCollision < rightCollision) {
+                    else if (leftCollision < topCollision &&
+                        leftCollision < bottomCollision &&
+                        leftCollision < rightCollision) {
                         ball->invertXVelocity();
                     }
                     else {
@@ -250,13 +280,18 @@ void Game::checkCollisions() {
                     else {
                         std::cerr << "Error: Bonus pointer is null!" << std::endl;
                     }
-                    if (topCollision < bottomCollision && topCollision < leftCollision && topCollision < rightCollision) {
+                    if (topCollision < bottomCollision && topCollision < leftCollision &&
+                        topCollision < rightCollision) {
                         ball->invertYVelocity();
                     }
-                    else if (bottomCollision < topCollision && bottomCollision < leftCollision && bottomCollision < rightCollision) {
+                    else if (bottomCollision < topCollision &&
+                        bottomCollision < leftCollision &&
+                        bottomCollision < rightCollision) {
                         ball->invertYVelocity();
                     }
-                    else if (leftCollision < topCollision && leftCollision < bottomCollision && leftCollision < rightCollision) {
+                    else if (leftCollision < topCollision &&
+                        leftCollision < bottomCollision &&
+                        leftCollision < rightCollision) {
                         ball->invertXVelocity();
                     }
                     else {
@@ -265,15 +300,19 @@ void Game::checkCollisions() {
                     blocks[i]->destroy();
                     break;
                 }
-                else
-                {
-                    if (topCollision < bottomCollision && topCollision < leftCollision && topCollision < rightCollision) {
+                else {
+                    if (topCollision < bottomCollision && topCollision < leftCollision &&
+                        topCollision < rightCollision) {
                         ball->invertYVelocity();
                     }
-                    else if (bottomCollision < topCollision && bottomCollision < leftCollision && bottomCollision < rightCollision) {
+                    else if (bottomCollision < topCollision &&
+                        bottomCollision < leftCollision &&
+                        bottomCollision < rightCollision) {
                         ball->invertYVelocity();
                     }
-                    else if (leftCollision < topCollision && leftCollision < bottomCollision && leftCollision < rightCollision) {
+                    else if (leftCollision < topCollision &&
+                        leftCollision < bottomCollision &&
+                        leftCollision < rightCollision) {
                         ball->invertXVelocity();
                     }
                     else {
@@ -289,7 +328,8 @@ void Game::checkCollisions() {
 }
 void Game::checkBonusCollisions() {
     for (size_t i = 0; i < bonuses.size(); ++i) {
-        BottomWallBonus* bottomWallBonus = dynamic_cast<BottomWallBonus*>(bonuses[i].get());
+        BottomWallBonus* bottomWallBonus =
+            dynamic_cast<BottomWallBonus*>(bonuses[i].get());
         if (Utils::checkCollision(paddle->getRect(), bonuses[i]->getRect())) {
 
             if (bottomWallBonus) {
@@ -303,7 +343,9 @@ void Game::checkBonusCollisions() {
             bonuses.erase(bonuses.begin() + i);
             i--;
         }
-        else if (!bonuses[i]->isCollected() && Utils::checkCollision(paddle->getRect(), bonuses[i]->getRect())) {
+        else if (!bonuses[i]->isCollected() &&
+            Utils::checkCollision(paddle->getRect(),
+                bonuses[i]->getRect())) {
             bonuses[i]->apply(*paddle, *ball);
             bonuses.erase(bonuses.begin() + i);
             i--;

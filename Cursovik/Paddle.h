@@ -3,18 +3,19 @@
 
 class Paddle {
 public:
-    Paddle(int x, int y, int width, int height, int windowWidth);
-    ~Paddle();
+	Paddle(int x, int y, int width, int height, int windowWidth);
+	~Paddle();
 
-    void handleInput(const Uint8* keyboardState);
-    void render(SDL_Renderer* renderer);
-    void moveLeft();
-    void moveRight();
-    SDL_Rect getRect() const;
-    void shrink(int amount);
-    void widen(int amount);
+	void handleInput(const Uint8* keyboardState);
+	void render(SDL_Renderer* renderer);
+	void moveLeft();
+	void moveRight();
+	SDL_Rect getRect() const;
+	void shrink(int amount);
+	void widen(int amount);
+
 private:
-    SDL_Rect rect;
-    int velocity;
-    int windowWidth;
+	SDL_Rect rect;
+	int velocity;
+	int windowWidth;
 };
