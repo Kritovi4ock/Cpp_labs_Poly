@@ -233,12 +233,9 @@ void GameBoard::printGrid() const {
 
 void GameBoard::tryCreateBonus(int row, int col, GemColor color) {
     if (rand() % 100 < 15) {
-        BonusType type = (rand() % 2 == 0) ? BonusType::RECOLOR : BonusType::BOMB;
-
         std::vector<std::pair<int, int>> candidates;
         for (int i = std::max(0, row - 3); i <= std::min(rows - 1, row + 3); ++i) {
-            for (int j = std::max(0, col - 3); j <= std::min(cols - 1, col + 3);
-                ++j) {
+            for (int j = std::max(0, col - 3); j <= std::min(cols - 1, col + 3); ++j) {
                 if (i != row || j != col) {
                     candidates.emplace_back(i, j);
                 }
@@ -250,7 +247,14 @@ void GameBoard::tryCreateBonus(int row, int col, GemColor color) {
             int x = grid[pos.first][pos.second].getPosition().x;
             int y = grid[pos.first][pos.second].getPosition().y;
 
-            auto bonus = std::make_unique<Bonus>(x, y, gemSize - 2, type, color);
+            std::unique_ptr<Bonus> bonus;
+            if (rand() % 2 == 0) {
+                bonus = std::make_unique<RecolorBonus>(x, y, gemSize - 2, color);
+            }
+            else {
+                bonus = std::make_unique<BombBonus>(x, y, gemSize - 2, color);
+            }
+
             grid[pos.first][pos.second] = *bonus;
             activeBonuses.push_back(std::move(bonus));
         }

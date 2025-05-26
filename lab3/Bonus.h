@@ -4,37 +4,44 @@
 #include <utility>
 #include <vector>
 
-enum class BonusType { RECOLOR, BOMB, NONE };
-
 class Bonus : public Gem {
-private:
-    BonusType type;
+protected:
     GemColor originalColor;
 
 public:
-    Bonus(int x, int y, int size, BonusType bonusType, GemColor color)
-        : Gem(x, y, size), type(bonusType), originalColor(color) {
-        setVisuals();
-    }
-
-    BonusType getType() const { return type; }
-    GemColor getOriginalColor() const { return originalColor; }
-
     using GridModifier = std::function<void(int, int, GemColor)>;
-    void applyEffect(int targetRow, int targetCol, int rows, int cols,
-        GridModifier modifier);
 
-private:
-    void setVisuals() {
-        switch (type) {
-        case BonusType::RECOLOR:
-            color = GemColor::PURPLE;
-            break;
-        case BonusType::BOMB:
-            color = GemColor::ORANGE;
-            break;
-        default:
-            break;
-        }
+    Bonus(int x, int y, int size, GemColor color)
+        : Gem(x, y, size), originalColor(color) {}
+
+    virtual ~Bonus() = default;
+    virtual void applyEffect(int targetRow, int targetCol,
+        int rows, int cols,
+        GridModifier modifier) = 0;
+
+    GemColor getOriginalColor() const { return originalColor; }
+};
+
+class RecolorBonus : public Bonus {
+public:
+    RecolorBonus(int x, int y, int size, GemColor color)
+        : Bonus(x, y, size, color) {
+        color = GemColor::PURPLE;
     }
+
+    void applyEffect(int targetRow, int targetCol,
+        int rows, int cols,
+        GridModifier modifier) override;
+};
+
+class BombBonus : public Bonus {
+public:
+    BombBonus(int x, int y, int size, GemColor color)
+        : Bonus(x, y, size, color) {
+        color = GemColor::ORANGE;
+    }
+
+    void applyEffect(int targetRow, int targetCol,
+        int rows, int cols,
+        GridModifier modifier) override;
 };
